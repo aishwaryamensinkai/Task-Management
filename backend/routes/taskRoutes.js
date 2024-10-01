@@ -1,7 +1,7 @@
 // routes/taskRoutes.js
 const express = require("express");
 const router = express.Router();
-const { protect, admin } = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authMiddleware");
 const {
   createTask,
   getTasks,
@@ -12,14 +12,13 @@ const {
   getTaskSummaryReport,
 } = require("../controllers/taskController");
 
-// Only allow admins to create tasks (i.e., assign tasks to others)
-router.route("/").post(protect, admin, createTask).get(protect, getTasks);
+router.route("/").post(protect, createTask).get(protect, getTasks);
 
 router
   .route("/:id")
   .get(protect, getTaskById)
-  .put(protect, admin, updateTask) // Only admins can update tasks
-  .delete(protect, admin, deleteTask); // Only admins can delete tasks
+  .put(protect, updateTask)
+  .delete(protect, deleteTask);
 
 router.put("/:id/complete", protect, completeTask);
 

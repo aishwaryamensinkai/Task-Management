@@ -33,7 +33,6 @@ if (typeof window !== "undefined") {
 }
 
 const TaskManager = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
@@ -53,13 +52,6 @@ const TaskManager = () => {
   const handleTaskClick = (taskId) => {
     navigate(`/tasks/${taskId}`); // Navigate to the task details page
   };
-
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user.isAdmin) {
-      setIsAdmin(true);
-    }
-  }, []);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -220,114 +212,113 @@ const TaskManager = () => {
 
   return (
     <Container maxWidth="sm">
-      {isAdmin && (
-        <Box
-          mt={4}
-          p={3}
-          boxShadow={3}
-          style={{ borderRadius: "8px", backgroundColor: "#f9f9f9" }}
-        >
-          <Typography variant="h5" gutterBottom>
-            {selectedTask ? "Edit Task" : "Create Task"}
-          </Typography>
-          <form onSubmit={handleFormSubmit} style={{ padding: "10px" }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Task Title"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleFormChange}
-                  variant="outlined"
-                  fullWidth
-                  size="small" // Make the input smaller
-                  margin="dense" // Reduce margin
-                  required
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleFormChange}
-                  variant="outlined"
-                  fullWidth
-                  size="small"
-                  margin="dense"
-                  multiline
-                  rows={2}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  type="date"
-                  name="dueDate"
-                  value={formData.dueDate}
-                  onChange={handleFormChange}
-                  fullWidth
-                  margin="dense"
-                  required
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Select
-                  name="priority"
-                  value={formData.priority}
-                  onChange={handleFormChange}
-                  fullWidth
-                  size="small"
-                  margin="dense"
-                >
-                  <MenuItem value="Low">Low</MenuItem>
-                  <MenuItem value="Medium">Medium</MenuItem>
-                  <MenuItem value="High">High</MenuItem>
-                </Select>
-              </Grid>
-              <Grid item xs={12}>
-                <Select
-                  name="assignedUser"
-                  value={formData.assignedUser}
-                  onChange={handleFormChange}
-                  fullWidth
-                  size="small"
-                  margin="dense"
-                >
-                  <MenuItem value="">Assign to Self</MenuItem>
-                  {users.map((user) => (
-                    <MenuItem key={user._id} value={user._id}>
-                      {user.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Grid>
+      {/* create task */}
+      <Box
+        mt={4}
+        p={3}
+        boxShadow={3}
+        style={{ borderRadius: "8px", backgroundColor: "#f9f9f9" }}
+      >
+        <Typography variant="h5" gutterBottom>
+          {selectedTask ? "Edit Task" : "Create Task"}
+        </Typography>
+        <form onSubmit={handleFormSubmit} style={{ padding: "10px" }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Task Title"
+                name="title"
+                value={formData.title}
+                onChange={handleFormChange}
+                variant="outlined"
+                fullWidth
+                size="small" // Make the input smaller
+                margin="dense" // Reduce margin
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Description"
+                name="description"
+                value={formData.description}
+                onChange={handleFormChange}
+                variant="outlined"
+                fullWidth
+                size="small"
+                margin="dense"
+                multiline
+                rows={2}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                type="date"
+                name="dueDate"
+                value={formData.dueDate}
+                onChange={handleFormChange}
+                fullWidth
+                margin="dense"
+                required
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Select
+                name="priority"
+                value={formData.priority}
+                onChange={handleFormChange}
+                fullWidth
+                size="small"
+                margin="dense"
+              >
+                <MenuItem value="Low">Low</MenuItem>
+                <MenuItem value="Medium">Medium</MenuItem>
+                <MenuItem value="High">High</MenuItem>
+              </Select>
+            </Grid>
+            <Grid item xs={12}>
+              <Select
+                name="assignedUser"
+                value={formData.assignedUser}
+                onChange={handleFormChange}
+                fullWidth
+                size="small"
+                margin="dense"
+              >
+                <MenuItem value="">Assign to Self</MenuItem>
+                {users.map((user) => (
+                  <MenuItem key={user._id} value={user._id}>
+                    {user.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+              >
+                {selectedTask ? "Update Task" : "Create Task"}
+              </Button>
+            </Grid>
+            {selectedTask && (
               <Grid item xs={6}>
                 <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
+                  variant="outlined"
+                  color="secondary"
                   fullWidth
+                  onClick={() => handleTaskDelete(selectedTask._id)}
                 >
-                  {selectedTask ? "Update Task" : "Create Task"}
+                  Delete Task
                 </Button>
               </Grid>
-              {selectedTask && (
-                <Grid item xs={6}>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    fullWidth
-                    onClick={() => handleTaskDelete(selectedTask._id)}
-                  >
-                    Delete Task
-                  </Button>
-                </Grid>
-              )}
-            </Grid>
-          </form>
-        </Box>
-      )}
+            )}
+          </Grid>
+        </form>
+      </Box>
 
       {/* Filter and Task List */}
       <Box
